@@ -1,0 +1,7 @@
+project: rnshah9/ocean
+target: ocean
+tests:
+  - file://examples/http.c
+
+cmds:
+  - cmd: /repo/bin/pre64 @@
