@@ -1,5 +1,6 @@
 project: rnshah9/ocean
 target: ocean
+image: ghcr.io/rnshah9/playground:ocean
 tests:
   - file://examples/http.c
 

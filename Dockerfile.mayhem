@@ -7,3 +7,5 @@ COPY . /repo
 WORKDIR /repo
 RUN mkdir bin
 RUN make pre
+WORKDIR /repo/tools
+RUN gcc -o dump-opcodes -I/repo dump-opcodes.c
