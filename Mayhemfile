@@ -1,7 +1,6 @@
-project: rnshah9/ocean
-target: ocean
-image: ghcr.io/rnshah9/playground:ocean
-tests:
+project: ocean
+target: pre64
+testsuite:
   - file://examples/http.c
 
 cmds:
