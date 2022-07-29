@@ -7,14 +7,6 @@ COPY . /repo
 WORKDIR /repo
 RUN mkdir bin
 RUN make pre
-WORKDIR /repo/tools
-RUN gcc -o dump-opcodes -I/repo dump-opcodes.c
-
-RUN mkdir -p /deps
-RUN ldd /repo/bin/pre64 | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'cp % /deps;'
 
 FROM ubuntu:22.04 as package
-
-COPY --from=builder /deps /deps
-COPY --from=builder /repo/bin/pre64 /repo/bin/pre64
-ENV LD_LIBRARY_PATH=/deps
+COPY --from=builder /repo/bin/pre64 /
