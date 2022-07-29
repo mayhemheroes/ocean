@@ -4,4 +4,4 @@ testsuite:
   - file://examples/http.c
 
 cmds:
-  - cmd: /repo/bin/pre64 @@
+  - cmd: /pre64 @@
