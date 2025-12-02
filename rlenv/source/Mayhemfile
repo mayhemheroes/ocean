@@ -1,0 +1,9 @@
+project: mayhemheroes/ocean
+target: pre64
+testsuite:
+  - https://app.mayhem.security/mayhemheroes/ocean/pre64/uploaded/a7c577a0d06b96d35dda39cbd570618986c011b1425b6b122bb6e0b411bb1012/testsuite.tgz
+cmds:
+  - cmd: /pre64 @@
+    env: {}
+image: ghcr.io/mayhemheroes/ocean@sha256:0a045e73d0568f8f2df0732ee87f69393f96e106583576ad1eaf81299df63f1f
+duration: 300

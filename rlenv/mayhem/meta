@@ -1,0 +1,12 @@
+{
+  "workspace": "mayhemheroes",
+  "project": "ocean",
+  "target": "pre64",
+  "run_id": "2",
+  "ci_url": "https://github.com:443/mayhemheroes/ocean/actions/runs/3113473700",
+  "run_image_name": "ghcr.io/mayhemheroes/ocean:main",
+  "run_image_with_digest": "ghcr.io/mayhemheroes/ocean@sha256:0a045e73d0568f8f2df0732ee87f69393f96e106583576ad1eaf81299df63f1f",
+  "git_repo_url": "git@github.com:mayhemheroes/ocean.git",
+  "git_revision": "88f316160970239464c023f44372590eb586e942",
+  "target_executable": "/pre64"
+}

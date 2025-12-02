@@ -13,3 +13,4 @@ bin/
 *.iobj
 *.tlog
 *.txt
+rlenv/mayhem/data/testsuite

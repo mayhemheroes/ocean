@@ -1,0 +1,113 @@
+# ============================================================================
+# RLENV Patch Playground - Single-Stage Build
+# ============================================================================
+# Original image: ghcr.io/mayhemheroes/ocean:main
+# Git revision: 88f316160970239464c023f44372590eb586e942
+# Target: /pre64
+# ============================================================================
+
+# ============================================================================
+# 1. Base Image Selection
+# ============================================================================
+FROM --platform=linux/amd64 ubuntu:22.04
+
+# ============================================================================
+# 2. System Dependencies (merge ALL stages from original Dockerfile)
+# ============================================================================
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    jq \
+    && rm -rf /var/lib/apt/lists/*
+
+# REQUIRED: jq is used by validate.sh to parse metadata.json
+
+# ============================================================================
+# 3. Copy MTV Binary (REQUIRED - used by validate.sh)
+# ============================================================================
+COPY --from="us-east4-docker.pkg.dev/forallsecure-1/rlenv-staging/rlenv-mcp-static:latest" \
+     /rlenv/bin/mtv /rlenv/bin/mtv
+
+# MTV (Mayhem Test & Verify) is required for validation and crash triage
+
+# ============================================================================
+# 4. Language-Specific Setup
+# ============================================================================
+ENV FUZZING_LANGUAGE=c
+
+# ============================================================================
+# 5. Copy Source Code (EARLY - source exists now)
+# ============================================================================
+COPY . /rlenv/source/ocean/
+
+# IMPORTANT: This copies the entire repository to /rlenv/source/ocean/
+
+# ============================================================================
+# 6. Make Source World-Writable (REQUIRED for non-root rebuilds)
+# ============================================================================
+RUN chmod -R 777 /rlenv/source
+
+# Why 777? Validation runs as UID 1000 (unprivileged user)
+# Must be able to modify source code and rebuild
+
+# ============================================================================
+# 7. Set Working Directory
+# ============================================================================
+WORKDIR /rlenv/source/ocean/
+
+# All subsequent RUN commands execute from this directory
+
+# ============================================================================
+# 8. Install Language Dependencies (if any)
+# ============================================================================
+# No additional language dependencies needed for this C project
+
+# ============================================================================
+# 9. Build Application (extract from original Dockerfile)
+# ============================================================================
+RUN mkdir -p bin && make pre
+
+# Creates bin/ directory and builds pre64 binary using Makefile
+
+# ============================================================================
+# 10. Copy Artifacts to Expected Locations (if needed)
+# ============================================================================
+# The Makefile already places the binary at bin/pre64
+# Copy it to the expected location /pre64
+RUN cp bin/pre64 /pre64
+
+# ============================================================================
+# 11. Permission Management (REQUIRED)
+# ============================================================================
+# Target executable (rwxrw-rw-)
+RUN chmod 766 /pre64
+
+# Build output directory
+RUN chmod -R 777 /rlenv/source/ocean/bin 2>/dev/null || true
+
+# ============================================================================
+# 12. Copy rlenv Directory (MUST BE NEAR END - doesn't exist yet!)
+# ============================================================================
+COPY rlenv /rlenv
+
+# CRITICAL: This directory doesn't exist when you create this Dockerfile
+# It's populated later by the `rlenv patch` command
+# That's why it must come AFTER source copy and build
+
+# ============================================================================
+# 13. Final Permission Fix (REQUIRED)
+# ============================================================================
+RUN chmod -R 777 /rlenv/source
+
+# Ensures source remains writable after rlenv directory copy
+
+# ============================================================================
+# 14. Set Entry Point
+# ============================================================================
+CMD ["/pre64"]
+
+# Use the same path as in metadata.json
+
+# ============================================================================
+# 15. Reset Working Directory
+# ============================================================================
+WORKDIR /
