@@ -1,0 +1,9 @@
+project: ocean
+target: pre64
+
+cmds:
+  - cmd: /mayhem/pre64 @@
+
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/pre64/testsuite
